@@ -8,23 +8,19 @@ use App\Services\Contracts\ProductServiceInterface;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
-    public function addFilter($searchObject, $query){
-
-        if ($searchObject->name) {
-            $query = $query->where('name', $searchObject->name);
-        }
-        if ($searchObject->priceGT || $searchObject->priceLT) {
-            $query = $query->whereHas('variants', function ($variantQuery) use ($searchObject) {
-                if ($searchObject->greatestPrice) {
-                    $variantQuery->where('price', '>', $searchObject->greatestPrice);
-                }
-                if ($searchObject->lowestPrice) {
-                    $variantQuery->where('price', '<', $searchObject->lowestPrice);
-                }
+    public function addFilter($searchObject, $query)
+    {
+        return $query
+            ->when($searchObject->name, fn ($q, $name) => $q->where('name', $name))
+            ->when($searchObject->validFrom, fn ($q, $validFrom) => $q->where('validFrom', '>=', $validFrom))
+            ->when($searchObject->validTo, fn ($q, $validTo) => $q->where('validTo', '<=', $validTo))
+            ->when($searchObject->greatestPrice || $searchObject->lowestPrice, function ($q) use ($searchObject) {
+                $q->whereHas('variants', function ($variantQuery) use ($searchObject) {
+                    $variantQuery
+                        ->when($searchObject->greatestPrice, fn ($q, $price) => $q->where('price', '>', $price))
+                        ->when($searchObject->lowestPrice, fn ($q, $price) => $q->where('price', '<', $price));
+                });
             });
-        }
-
-        return $query;
     }
 
     public function includeRelation($searchObject, $query)

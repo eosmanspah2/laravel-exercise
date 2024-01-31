@@ -10,6 +10,9 @@ class ProductSearchObject extends BaseSearchObject
     public ?int $greatestPrice = null;
     public ?int $lowestPrice = null;
 
+    public ?string $validFrom = null;
+    public ?string $validTo = null;
+
     public function __construct(array $attributes = [])
     {
         $this->fill($attributes);
@@ -21,6 +24,8 @@ class ProductSearchObject extends BaseSearchObject
         $this->name = $attributes['name'] ?? null;
         $this->greatestPrice = $attributes['greatestPrice'] ?? null;
         $this->lowestPrice = $attributes['lowestPrice'] ?? null;
+        $this->validFrom = $attributes['validFrom'] ?? null;
+        $this->validTo = $attributes['validTo'] ?? null;
         $this->includeProductType = $attributes['includeProductType'] ?? null;
     }
 }

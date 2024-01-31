@@ -7,7 +7,6 @@ use App\Http\Requests\ProductTypeCreateRequest;
 use App\Http\Requests\ProductTypeUpdateRequest;
 use App\Http\Resources\ProductTypeResource;
 use App\Services\Contracts\ProductTypeServiceInterface;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductTypeController extends BaseController
 {

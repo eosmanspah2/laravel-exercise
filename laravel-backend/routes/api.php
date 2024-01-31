@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('product', ProductController::class);
 Route::apiResource('productType', ProductTypeController::class);
 Route::apiResource('variant', VariantController::class);
+Route::get('/product/lastVariant', [ProductController::class, 'lastVariant']);
 
 Route::post('login', [AuthenticationController::class, 'login']);
 Route::post('logout', [AuthenticationController::class, 'logout'])->middleware("auth:sanctum");

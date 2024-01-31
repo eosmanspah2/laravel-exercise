@@ -18,7 +18,7 @@ class AuthenticationController extends Controller
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.']
+                'email' => ['Incorrect credentials.']
             ]);
         }
 
@@ -31,6 +31,6 @@ class AuthenticationController extends Controller
     {
         $request->user()->tokens()->delete();
 
-        return response()->json(['message' => 'Logged out successfully']);
+        return response()->json(['message' => 'Logged out']);
     }
 }
