@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Http\Requests\SearchObjects\BaseSearchObject;
-use App\Services\Interfaces\BaseServiceInterface;
+use App\Services\Contracts\BaseServiceInterface;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 

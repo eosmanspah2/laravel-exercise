@@ -2,13 +2,12 @@
 
 namespace App\Providers;
 
-use App\Services\Interfaces\ProductServiceInterface;
-use App\Services\Interfaces\ProductTypeServiceInterface;
-use App\Services\Interfaces\VariantServiceInterface;
+use App\Services\Contracts\ProductServiceInterface;
+use App\Services\Contracts\ProductTypeServiceInterface;
+use App\Services\Contracts\VariantServiceInterface;
 use App\Services\ProductService;
 use App\Services\ProductTypeService;
 use App\Services\VariantService;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,12 +20,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProductServiceInterface::class, ProductService::class);
         $this->app->bind(ProductTypeServiceInterface::class, ProductTypeService::class);
         $this->app->bind(VariantServiceInterface::class, VariantService::class);
-
-        // exception handler
-
-        $this->app->singleton(
-            ExceptionHandler::class
-        );
     }
 
     public function boot(): void

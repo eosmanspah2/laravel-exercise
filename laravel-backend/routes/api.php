@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\VariantController;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthenticationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,7 +26,7 @@ Route::apiResource('product', ProductController::class);
 Route::apiResource('productType', ProductTypeController::class);
 Route::apiResource('variant', VariantController::class);
 
-Route::post('login', [AuthController::class, 'login']);
-Route::post('logout', [AuthController::class, 'logout'])->middleware("auth:sanctum");
+Route::post('login', [AuthenticationController::class, 'login']);
+Route::post('logout', [AuthenticationController::class, 'logout'])->middleware("auth:sanctum");
 
 

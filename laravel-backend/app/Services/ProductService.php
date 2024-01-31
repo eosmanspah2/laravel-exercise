@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Http\Requests\SearchObjects\ProductSearchObject;
 use App\Models\Product;
-use App\Services\Interfaces\ProductServiceInterface;
+use App\Services\Contracts\ProductServiceInterface;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {

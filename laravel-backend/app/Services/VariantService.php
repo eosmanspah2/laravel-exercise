@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Http\Requests\SearchObjects\VariantSearchObject;
 use App\Models\Variant;
-use App\Services\Interfaces\VariantServiceInterface;
+use App\Services\Contracts\VariantServiceInterface;
 
 class VariantService extends BaseService implements VariantServiceInterface
 {
