@@ -32,4 +32,6 @@ class VariantService extends BaseService implements VariantServiceInterface
     {
         return Variant::class;
     }
+
+    //NEED TO ADD LOGIC FOR VARIANTS AND STATES
 }

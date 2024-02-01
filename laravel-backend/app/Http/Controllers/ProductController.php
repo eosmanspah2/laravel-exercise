@@ -8,13 +8,16 @@ use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\Contracts\ProductServiceInterface;
+use App\Services\ProductService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductController extends BaseController
 {
+    protected ProductService $productService;
     public function __construct(ProductServiceInterface $productService)
     {
         parent::__construct($productService);
+        $this->productService = $productService;
     }
 
     public function getInsertRequestClass()
@@ -53,5 +56,17 @@ class ProductController extends BaseController
             ];
         });
         return response()->json(['data' => $structuredData]);
+    }
+
+    public function activate(Product $product){
+        $this->productService->activate($product);;
+    }
+
+    public function draft(Product $product){
+        $this->productService->draft($product);
+    }
+
+    public function delete(Product $product){
+        $this->productService->deleted($product);
     }
 }

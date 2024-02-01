@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Http\Requests\SearchObjects\ProductSearchObject;
+use App\Models\Enums\ProductState;
 use App\Models\Product;
+use App\Models\ProductStateMachine\States\BaseState;
 use App\Services\Contracts\ProductServiceInterface;
 
 class ProductService extends BaseService implements ProductServiceInterface
@@ -40,5 +42,24 @@ class ProductService extends BaseService implements ProductServiceInterface
     protected function getModelClass()
     {
         return Product::class;
+    }
+
+    //TO FIX + allowed actions
+    public function activate(Product $product)
+    {
+        $productState = BaseState::getState($product->state);
+        $productState->moveToNextState($product, ProductState::ACTIVE);
+    }
+
+    public function draft(Product $product)
+    {
+        $productState = BaseState::getState($product->state);
+        $productState->moveToNextState($product, ProductState::DRAFT);
+    }
+
+    public function deleted(Product $product)
+    {
+        $productState = BaseState::getState($product->state);
+        $productState->moveToNextState($product, ProductState::DRAFT);
     }
 }
