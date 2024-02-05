@@ -10,7 +10,7 @@ use App\Services\Contracts\ProductTypeServiceInterface;
 
 class ProductTypeController extends BaseController
 {
-    public function __construct(ProductTypeServiceInterface $productTypeService)
+   /* public function __construct(ProductTypeServiceInterface $productTypeService)
     {
         parent::__construct($productTypeService);
     }
@@ -32,5 +32,5 @@ class ProductTypeController extends BaseController
         }
 
         return new ProductTypeResource($data);
-    }
+    }*/
 }

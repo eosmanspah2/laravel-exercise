@@ -2,14 +2,22 @@
 
 namespace App\Services;
 
+use App\Http\Requests\ProductAddRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Requests\SearchObjects\ProductSearchObject;
 use App\Models\Enums\ProductState;
 use App\Models\Product;
 use App\Models\ProductStateMachine\States\BaseState;
 use App\Services\Contracts\ProductServiceInterface;
+use Exception;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
+
+    public function __construct(protected BaseState $baseState)
+    {
+    }
+
     public function addFilter($searchObject, $query)
     {
         return $query
@@ -34,32 +42,98 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $query;
     }
 
-    public function getSearchObject()
-    {
-        return ProductSearchObject::class;
-    }
-
     protected function getModelClass()
     {
         return Product::class;
     }
 
-    //TO FIX + allowed actions
-    public function activate(Product $product)
+    public function allowedActions(int $id)
     {
-        $productState = BaseState::getState($product->state);
-        $productState->moveToNextState($product, ProductState::ACTIVE);
+        $product = Product::find($id);
+        $state = $this->baseState->getState($product->state);
+
+        return $state->allowedActions();
     }
 
-    public function draft(Product $product)
+    public function getInsertRequestClass()
     {
-        $productState = BaseState::getState($product->state);
-        $productState->moveToNextState($product, ProductState::DRAFT);
+        return ProductAddRequest::class;
     }
 
-    public function deleted(Product $product)
+    public function getUpdateRequestClass()
     {
-        $productState = BaseState::getState($product->state);
-        $productState->moveToNextState($product, ProductState::DRAFT);
+        return ProductUpdateRequest::class;
+    }
+
+    public function add($request)
+    {
+        $state = BaseState::getState(ProductState::DRAFT->value);
+
+        return $state->addProduct($request->all());
+    }
+
+    public function insert($request)
+    {
+        $model = Product::create($request);
+        return $model;
+    }
+
+    public function addVariant(array $request)
+    {
+        $model = Product::find($request['product_id']);
+
+        $state = BaseState::getState($model->status);
+
+        return $state->addVariant($request);
+    }
+
+    public function activate($id, array $request)
+    {
+        $model = Product::find($id);
+
+        $state = BaseState::getState($model->status);
+
+        return $state->activate($request, $model);
+    }
+
+    public function hideProduct($id)
+    {
+        $product = Product::find($id);
+
+        $state = BaseState::getState($product->status);
+
+        return $state->hideProduct($product);
+    }
+
+    public function draftProduct($id)
+    {
+        $model = Product::find($id);
+        $state = BaseState::getState($model->status);
+        return $state->productDraft($id);
+    }
+
+    public function update(Request $request, int $id)
+    {
+        $model = Product::find($id);
+
+        if (!$model) {
+            throw new Exception("Resource not found!");
+        }
+
+        $state = BaseState::getState($model->status);
+
+        return $state->updateProduct($id, $request);
+    }
+
+    public function updateProduct($request, int $id)
+    {
+        $model = Product::find($id);
+
+        if (!$model) {
+            throw new Exception("Resource not found!");
+        }
+
+        $model->update($request->all());
+        return $model;
     }
 }
