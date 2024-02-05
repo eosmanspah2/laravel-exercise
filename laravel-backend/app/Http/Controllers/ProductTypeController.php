@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\ProductTypeCreateRequest;
 use App\Http\Requests\ProductTypeUpdateRequest;
+use App\Http\Requests\SearchObjects\ProductTypeSearchObject;
 use App\Http\Resources\ProductTypeResource;
 use App\Services\Contracts\ProductTypeServiceInterface;
 
 class ProductTypeController extends BaseController
 {
-   /* public function __construct(ProductTypeServiceInterface $productTypeService)
+    public function __construct(ProductTypeServiceInterface $productTypeService)
     {
         parent::__construct($productTypeService);
     }
@@ -32,5 +33,10 @@ class ProductTypeController extends BaseController
         }
 
         return new ProductTypeResource($data);
-    }*/
+    }
+
+    public function getSearchObject($params)
+    {
+        return new ProductTypeSearchObject($params);
+    }
 }

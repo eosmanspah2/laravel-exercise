@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\SearchObjects\VariantSearchObject;
 use App\Http\Requests\VariantCreateRequest;
 use App\Http\Requests\VariantUpdateRequest;
 use App\Http\Resources\VariantResource;
@@ -35,5 +36,10 @@ class VariantController extends BaseController
         }
 
         return new VariantResource($request);
+    }
+
+    public function getSearchObject($params)
+    {
+        return new VariantSearchObject($params);
     }
 }

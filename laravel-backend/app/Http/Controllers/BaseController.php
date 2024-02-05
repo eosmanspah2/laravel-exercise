@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 abstract class BaseController extends Controller
 {
@@ -10,6 +12,10 @@ abstract class BaseController extends Controller
     {
         $this->middleware('auth:sanctum')->except(['index']);
     }
+
+    abstract function getInsertRequestClass();
+    abstract function getUpdateRequestClass();
+    abstract function getSearchObject($params);
 
     public function index()
     {
@@ -19,10 +25,10 @@ abstract class BaseController extends Controller
     public function store(Request $request)
     {
         $this->authorize('admin');
-        
+
         $validatedData = $this->validate($request, $this->service->getInsertRules());
         $resource = $this->service->add($validatedData);
-        
+
         return $this->getAllResourcePayload($resource);
     }
 
@@ -34,10 +40,10 @@ abstract class BaseController extends Controller
     public function update(Request $request, int $id)
     {
         $this->authorize('admin');
-        
+
         $validatedData = $this->validate($request, $this->service->getUpdateRules());
         $resource = $this->service->update($validatedData, $id);
-        
+
         return $this->getAllResourcePayload($resource);
     }
 
@@ -52,7 +58,28 @@ abstract class BaseController extends Controller
         if ($collection) {
             return $this->service->getResource()::collection($data);
         }
-        
+
         return new $this->service->getResource($data);
+    }
+
+    public function validateRequest(Request $request, $formRequest)
+    {
+        try {
+            $formRequestInstance = new $formRequest();
+            $validatedData = $this->validate($request, $formRequestInstance->rules());
+            return $validatedData;
+        } catch (ValidationException $e) {
+            return $this->handleValidationException($e);
+        }
+    }
+
+    protected function handleValidationException(ValidationException $e)
+    {
+        $errors = $e->validator->errors();
+        $errorArray = $errors->toArray();
+
+        return response()->json([
+            'errors' => $errorArray,
+        ], 422);
     }
 }

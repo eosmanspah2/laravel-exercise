@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\ActivateRequest;
 use App\Http\Requests\ProductAddRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Http\Requests\SearchObjects\ProductSearchObject;
+use App\Http\Requests\VariantCreateRequest;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\VariantResource;
 use App\Models\Product;
 use App\Services\Contracts\ProductServiceInterface;
 use App\Services\ProductService;
@@ -58,15 +62,33 @@ class ProductController extends BaseController
         return response()->json(['data' => $structuredData]);
     }
 
-    public function activate(Product $product){
-        $this->productService->activate($product);;
+    public function allowedActions(int $id)
+    {
+        return $this->productService->allowedActions($id);
     }
 
-    public function draft(Product $product){
-        $this->productService->draft($product);
+    public function draft(int $productId)
+    {
+        return ProductResource::make($this->productService->draftProduct($productId));
     }
 
-    public function delete(Product $product){
-        $this->productService->deleted($product);
+    public function hide(int $productId)
+    {
+        return ProductResource::make($this->productService->hideProduct($productId));
+    }
+
+    public function addVariant(VariantCreateRequest $request)
+    {
+        return VariantResource::make($this->productService->addVariant($request->all()));
+    }
+
+    public function active(ActivateRequest $request, int $productId)
+    {
+        return ProductResource::make($this->productService->activate($productId, $request->all()));
+    }
+
+    public function getSearchObject($params)
+    {
+        return new ProductSearchObject($params);
     }
 }
